@@ -1,0 +1,420 @@
+openapi: 3.0.0
+info:
+  title: LetiCoin
+  version: 0.0.1
+servers:
+  - url: http://localhost:8081/
+    description: Api-gateway
+paths:
+  /auth/login:
+    post:
+      summary: Ауентификация пользователя
+      description: Ауентификация пользователя по логину и паролю
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              type: object
+              required:
+                - name
+                - password
+              properties:
+                name:
+                  type: string
+                  example: test
+                password:
+                  type: string
+                  example: test
+      responses:
+        '200':
+          description: Ауентификация прошла успешно
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+                required:
+                  - accessToken: ''
+                  - refreshToken: ''
+                properties:
+                  accessToken:
+                    type: string
+                    example: fff.fff.fff
+                  refreshToken:
+                    type: string
+                    example: fff.fff.fff
+  /auth/register:
+    post:
+      summary: Регистрация пользователя
+      description: Регистрация нового пользователя
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              type: object
+              required:
+                - email
+                - username
+                - firstname
+                - lastname
+                - password
+              properties:
+                email:
+                  type: string
+                  example: test@gmail.com
+                username:
+                  type: string
+                  example: test
+                firsname:
+                  type: string
+                  example: test
+                lastname:
+                  type: string
+                  example: test
+                password:
+                  type: string
+                  example: test
+      responses:
+        '200':
+          description: Регистрация прошла успешна
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+                required:
+                  - accessToken: ''
+                  - refreshToken: ''
+                properties:
+                  accessToken:
+                    type: string
+                    example: fff.fff.fff
+                  refreshToken:
+                    type: string
+                    example: fff.fff.fff
+  /user/home:
+    get:
+      summary: Личная страница пользователя
+      description: Личная страница пользователя
+      tags:
+        - User
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+                required:
+                  - id
+                  - username
+                  - role
+                  - firstname
+                  - lastname
+                  - email
+                properties:
+                  id:
+                    type: integer
+                    example: 12
+                  username:
+                    type: string
+                    example: test
+                  role:
+                    description: потом станет enum, сейчас временный костыль
+                    type: string
+                    example: USER_ROLE
+                  firstname:
+                    type: string
+                    example: test
+                  lastname:
+                    type: string
+                    example: test
+                  email:
+                    type: string
+                    example: test@gamil.com
+  /user/add/{courseId}:
+    post:
+      summary: Добавление пользователя на курс
+      tags:
+        - User
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          desription: ''
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+                required:
+                  - userId
+                  - courseId
+                  - name
+                  - amount
+                  - role
+                properties:
+                  userId:
+                    type: integer
+                    example: 12
+                  courseId:
+                    type: integer
+                    example: 3
+                  name:
+                    type: string
+                    example: Math
+                  amount:
+                    type: integer
+                    example: 100
+                  role:
+                    description: потом станет enum, сейчас временный костыль
+                    type: string
+                    example: STUDENT_ROLE
+  /course/list:
+    get:
+      summary: Список курсов пользователя
+      tags:
+        - Course
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - userId
+                    - courseId
+                    - name
+                    - amount
+                    - role
+                  properties:
+                    userId:
+                      type: integer
+                      example: 12
+                    courseId:
+                      type: integer
+                      example: 3
+                    name:
+                      type: string
+                      example: Math
+                    amount:
+                      type: integer
+                      example: 100
+                    role:
+                      description: потом станет enum, сейчас временный костыль
+                      type: string
+                      example: STUDENT_ROLE
+  /course/all:
+    get:
+      summary: Список всех курсов
+      tags:
+        - Course
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - name
+                    - courseId
+                  properties:
+                    name:
+                      type: string
+                      example: Math
+                    courseId:
+                      type: integer
+                      example: 1
+components:
+  schemas:
+    AuthRequest:
+      type: object
+      required:
+        - name
+        - password
+      properties:
+        name:
+          type: string
+          example: test
+        password:
+          type: string
+          example: test
+    AuthResponse:
+      type: object
+      required:
+        - accessToken: ''
+        - refreshToken: ''
+      properties:
+        accessToken:
+          type: string
+          example: fff.fff.fff
+        refreshToken:
+          type: string
+          example: fff.fff.fff
+    RegRequest:
+      type: object
+      required:
+        - email
+        - username
+        - firstname
+        - lastname
+        - password
+      properties:
+        email:
+          type: string
+          example: test@gmail.com
+        username:
+          type: string
+          example: test
+        firsname:
+          type: string
+          example: test
+        lastname:
+          type: string
+          example: test
+        password:
+          type: string
+          example: test
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - role
+        - firstname
+        - lastname
+        - email
+      properties:
+        id:
+          type: integer
+          example: 12
+        username:
+          type: string
+          example: test
+        role:
+          description: потом станет enum, сейчас временный костыль
+          type: string
+          example: USER_ROLE
+        firstname:
+          type: string
+          example: test
+        lastname:
+          type: string
+          example: test
+        email:
+          type: string
+          example: test@gamil.com
+    UserCourse:
+      type: object
+      required:
+        - userId
+        - courseId
+        - name
+        - amount
+        - role
+      properties:
+        userId:
+          type: integer
+          example: 12
+        courseId:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: Math
+        amount:
+          type: integer
+          example: 100
+        role:
+          description: потом станет enum, сейчас временный костыль
+          type: string
+          example: STUDENT_ROLE
+    UserCourses:
+      type: array
+      items:
+        type: object
+        required:
+          - userId
+          - courseId
+          - name
+          - amount
+          - role
+        properties:
+          userId:
+            type: integer
+            example: 12
+          courseId:
+            type: integer
+            example: 3
+          name:
+            type: string
+            example: Math
+          amount:
+            type: integer
+            example: 100
+          role:
+            description: потом станет enum, сейчас временный костыль
+            type: string
+            example: STUDENT_ROLE
+    Course:
+      type: object
+      required:
+        - name
+        - courseId
+      properties:
+        name:
+          type: string
+          example: Math
+        courseId:
+          type: integer
+          example: 1
+    Courses:
+      type: array
+      items:
+        type: object
+        required:
+          - name
+          - courseId
+        properties:
+          name:
+            type: string
+            example: Math
+          courseId:
+            type: integer
+            example: 1
