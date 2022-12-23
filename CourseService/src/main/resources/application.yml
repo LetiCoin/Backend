@@ -1,0 +1,18 @@
+server:
+  port: 9006
+
+spring:
+  application:
+    name: course-service
+  datasource:
+    url: jdbc:postgresql://localhost/CourseDB
+    username: postgres
+    password: 2392
+  jpa:
+    generate-ddl: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8080/eureka
+
