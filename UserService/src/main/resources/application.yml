@@ -1,0 +1,17 @@
+server:
+  port: 9005
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:postgresql://localhost/UserDB
+    username: postgres
+    password: 2392
+  jpa:
+    generate-ddl: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8080/eureka
