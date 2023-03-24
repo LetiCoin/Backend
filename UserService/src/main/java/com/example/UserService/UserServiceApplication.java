@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EntityScan(basePackages = {"com.example.UserService.Models"})
+//@EntityScan(basePackages = {"com.example.UserService.Models"})
 public class UserServiceApplication {
 
 	public static void main(String[] args) {

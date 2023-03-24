@@ -5,9 +5,9 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: jdbc:postgresql://localhost/AuthDB
+    url: jdbc:postgresql://localhost/[LetiCoin]AuthDB
     username: postgres
-    password: 2392
+    password: 23922392
   jpa:
     generate-ddl: true
 
