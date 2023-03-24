@@ -1,28 +1,37 @@
 package com.example.AuthService.Entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "username")
-    private String username;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "login")
+    private String login;
     @Column(name = "password")
     private String password;
-    @Column(name = "role")
-    private String role;
+    @Column(name = "role_id")
+    private Long role;
+    @Column(name = "status_id")
+    private Long statusId;
 
-    public User(){}
     public User(RegistrationRequest request){
-        this.username = request.getUsername();
-        this.role = "USER_ROLE";
-        this.password = request.getPassword();
+        this.email = request.getEmail();
+        this.login = request.getLogin();
+        if(request.getRole().equals("TEACHER")) this.role = 1L;
+        else if(request.getRole().equals("STUDENT")) this.role = 2L;
+        this.statusId = 0L;
     }
 }

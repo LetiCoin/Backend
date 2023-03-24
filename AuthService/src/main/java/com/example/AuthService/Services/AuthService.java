@@ -26,28 +26,43 @@ public class AuthService {
     }
 
     public AuthResponse register(RegistrationRequest registrationRequest) {
-        try{
-            User user = userService.findByUsername(registrationRequest.getUsername());
-            if(user != null){
-                return new AuthResponse("Username already exist", "Change your credentials");
-            }
-            user = new User(registrationRequest);
-            UserDto newUser = new UserDto(registrationRequest);
-
-            user.setPassword(BCrypt.hashpw(registrationRequest.getPassword(), BCrypt.gensalt()));
-            amqpTemplate.convertAndSend("UserReg", mapper.writeValueAsString(newUser));
-            userService.register(user);
-
-            String accessToken = jwt.generate(user, "ACCESS");
-            String refreshToken = jwt.generate(user, "REFRESH");
-            return new AuthResponse(accessToken, refreshToken);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        User user = userService.findByLogin(registrationRequest.getLogin());
+        if(user != null){
+            return new AuthResponse("Username already exist", "Change your credentials");
         }
+        user = new User(registrationRequest);
+        user.setPassword(BCrypt.hashpw(registrationRequest.getPassword(), BCrypt.gensalt()));
+
+        userService.register(user);
+
+        String accessToken = jwt.generate(user, "ACCESS");
+        String refreshToken = jwt.generate(user, "REFRESH");
+
+        return new AuthResponse(accessToken, refreshToken);
+    }
+
+    public AuthResponse activate(ActivationRequest request, String login){
+        User user = userService.findByLogin(login);
+        ActivationDto activationDto = new ActivationDto(request,user);
+        if(user.getStatusId() == 1L)return null;
+
+
+        /*
+        Rabbit
+        Creating account on User Service
+         */
+
+        user.setStatusId(1L);
+        userService.save(user);
+
+        String accessToken = jwt.generate(user, "ACCESS");
+        String refreshToken = jwt.generate(user, "REFRESH");
+
+        return new AuthResponse(accessToken, refreshToken);
     }
 
     public AuthResponse login(LoginRequest request){
-        User user = userService.findByUsername(request.getUsername());
+        User user = userService.findByLogin(request.getLogin());
         if(user == null){
             return new AuthResponse("Invalid data","Change your credentials");
         }

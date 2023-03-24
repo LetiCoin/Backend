@@ -2,9 +2,12 @@ package com.example.AuthService.Services;
 
 import com.example.AuthService.Entities.User;
 import com.example.AuthService.Entities.UserDto;
+import com.example.AuthService.Repos.RoleRepo;
+import com.example.AuthService.Repos.StatusRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +23,10 @@ public class JwtUtil {
     private String secret;
     @Value("${jwt.expiration}")
     private String expirationTime;
+
+    @Autowired
+    private UserService userService;
+
     private Key key;
     @PostConstruct
     public void init() {
@@ -37,9 +44,10 @@ public class JwtUtil {
     }
     public String generate(User user, String type) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", user.getId());
-        claims.put("role", user.getRole());
-        return doGenerateToken(claims, user.getUsername(), type);
+        claims.put("login", user.getLogin());
+        claims.put("role", userService.findByRoleId(user.getRole()).getName());
+        claims.put("status", userService.findByStatusId(user.getStatusId()).getName());
+        return doGenerateToken(claims, user.getLogin(), type);
     }
     private String doGenerateToken(Map<String, Object> claims, String username, String type) {
         long expirationTimeLong;

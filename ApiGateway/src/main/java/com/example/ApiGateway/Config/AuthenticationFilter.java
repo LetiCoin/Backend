@@ -36,6 +36,11 @@ public class AuthenticationFilter implements GatewayFilter {
             }
 
             this.populateRequestWithHeaders(exchange, token);
+
+            if(routerValidator.isRequiresActivation.test(request)){
+                if(!this.isActive(request)) return  this.onError(exchange,"Non activate account", HttpStatus.EXPECTATION_FAILED);
+            }
+
         }
         return chain.filter(exchange);
     }
@@ -57,12 +62,19 @@ public class AuthenticationFilter implements GatewayFilter {
         return !request.getHeaders().containsKey("Authorization");
     }
 
+    private boolean isActive(ServerHttpRequest request){
+        String status = request.getHeaders().getOrEmpty("status").get(0);
+        if(status.isEmpty() || status.equals("INACTIVE")) return false;
+        else return true;
+    }
+
     private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {
         Claims claims = jwtUtil.getAllClaimsFromToken(token);
         exchange.getRequest().mutate()
-                .header("username", claims.getSubject())
+                .header("login", String.valueOf(claims.get("login")))
                 .header("id",String.valueOf(claims.get("id")))
                 .header("role",String.valueOf(claims.get("role")))
+                .header("status",String.valueOf(claims.get("status")))
                 .build();
         System.out.println(exchange.getRequest().getPath());
     }
