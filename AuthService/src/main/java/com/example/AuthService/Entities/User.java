@@ -1,5 +1,6 @@
 package com.example.AuthService.Entities;
 
+import com.example.AuthService.Request.RegistrationRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

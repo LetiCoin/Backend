@@ -1,7 +1,7 @@
 package com.example.AuthService.Services;
 
 import com.example.AuthService.Entities.User;
-import com.example.AuthService.Entities.UserDto;
+//import com.example.AuthService.Entities.UserDto;
 import com.example.AuthService.Repos.RoleRepo;
 import com.example.AuthService.Repos.StatusRepo;
 import io.jsonwebtoken.Claims;

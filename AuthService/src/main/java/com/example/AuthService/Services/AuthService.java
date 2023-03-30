@@ -2,7 +2,11 @@ package com.example.AuthService.Services;
 
 
 import com.example.AuthService.Entities.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.AuthService.Exception.AuthExcept;
+import com.example.AuthService.Request.ActivationRequest;
+import com.example.AuthService.Request.LoginRequest;
+import com.example.AuthService.Request.RegistrationRequest;
+import com.example.AuthService.Response.AuthResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +29,10 @@ public class AuthService {
         this.amqpTemplate = amqpTemplate;
     }
 
-    public AuthResponse register(RegistrationRequest registrationRequest) {
+    public AuthResponse register(RegistrationRequest registrationRequest) throws AuthExcept {
         User user = userService.findByLogin(registrationRequest.getLogin());
         if(user != null){
-            return new AuthResponse("Username already exist", "Change your credentials");
+            throw new AuthExcept("Username already exist");
         }
         user = new User(registrationRequest);
         user.setPassword(BCrypt.hashpw(registrationRequest.getPassword(), BCrypt.gensalt()));
@@ -41,10 +45,12 @@ public class AuthService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
-    public AuthResponse activate(ActivationRequest request, String login){
+    public AuthResponse activate(ActivationRequest request, String login) throws AuthExcept {
         User user = userService.findByLogin(login);
         ActivationDto activationDto = new ActivationDto(request,user);
-        if(user.getStatusId() == 1L)return null;
+        if(user.getStatusId() == 1L) {
+            throw new AuthExcept("Already active");
+        }
 
 
         /*
@@ -61,14 +67,14 @@ public class AuthService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
-    public AuthResponse login(LoginRequest request){
+    public AuthResponse login(LoginRequest request) throws AuthExcept {
         User user = userService.findByLogin(request.getLogin());
         if(user == null){
-            return new AuthResponse("Invalid data","Change your credentials");
+            throw new AuthExcept("Invalid data");
         }
         boolean correct = BCrypt.checkpw(request.getPassword(),user.getPassword());
         if(!correct){
-            return new AuthResponse("Invalid data","Change your credentials");
+            throw new AuthExcept("Invalid data");
         }
         String accessToken = jwt.generate(user, "ACCESS");
         String refreshToken = jwt.generate(user, "REFRESH");
