@@ -8,6 +8,7 @@ import com.example.AuthService.Response.AuthResponse;
 //import com.example.AuthService.Entities.UserDto;
 import com.example.AuthService.Response.Response;
 import com.example.AuthService.Services.AuthService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -45,6 +46,7 @@ public class AuthController {
             description = "Registration Endpoint"
     )
     public ResponseEntity<AuthResponse> register(@RequestBody RegistrationRequest registrationRequest) throws AuthExcept {
+        System.out.println(registrationRequest);
         return ResponseEntity.ok(authService.register(registrationRequest));
     }
 
@@ -53,21 +55,12 @@ public class AuthController {
             description = "Activation Endpoint"
     )
     public ResponseEntity<AuthResponse> activate(@RequestBody ActivationRequest activationRequest,
-                                                 @RequestHeader("login") String login) throws AuthExcept {
+                                                 @RequestHeader("login") String login) throws AuthExcept, JsonProcessingException {
         return ResponseEntity.ok(authService.activate(activationRequest,login));
     }
-
-//    @PostMapping(value = "/validate")
-//    public ResponseEntity<>
 
     @GetMapping(value = "test")
     public Date test() throws Exception {
         return new Date();
     }
-
-    @GetMapping(value = "/testtoken")
-    public String testtoken(){
-        return "Successful";
-    }
-
 }

@@ -8,6 +8,7 @@ import com.example.AuthService.Request.ActivationRequest;
 import com.example.AuthService.Request.LoginRequest;
 import com.example.AuthService.Request.RegistrationRequest;
 import com.example.AuthService.Response.AuthResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,21 +51,21 @@ public class AuthService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
-    public AuthResponse activate(ActivationRequest request, String login) throws AuthExcept {
+    public AuthResponse activate(ActivationRequest request, String login) throws AuthExcept, JsonProcessingException {
         User user = userService.findByLogin(login);
         ActivationDto activationDto = new ActivationDto(request,user);
         if(user.getStatusId() == 1L) {
             throw new AuthExcept("Already active");
         }
 
+        try{
+            amqpTemplate.convertAndSend("[LetiCoin]ActivationAcc",mapper.writeValueAsString(activationDto));
+            user.setStatusId(1L);
+            userService.save(user);
 
-        /*
-        Rabbit
-        Creating account on User Service
-         */
-
-        user.setStatusId(1L);
-        userService.save(user);
+        }catch ( JsonProcessingException ex ){
+            throw ex;
+        }
 
         String accessToken = jwt.generate(user, "ACCESS");
         String refreshToken = jwt.generate(user, "REFRESH");

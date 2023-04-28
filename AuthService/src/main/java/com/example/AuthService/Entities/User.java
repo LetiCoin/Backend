@@ -31,8 +31,8 @@ public class User {
     public User(RegistrationRequest request){
         this.email = request.getEmail();
         this.login = request.getLogin();
-        if(request.getRole().equals("TEACHER")) this.role = 1L;
-        else if(request.getRole().equals("STUDENT")) this.role = 2L;
+        if(request.getRole().equals("ROLE_TEACHER")) this.role = 1L;
+        else if(request.getRole().equals("ROLE_STUDENT")) this.role = 2L;
         this.statusId = 0L;
     }
 }
