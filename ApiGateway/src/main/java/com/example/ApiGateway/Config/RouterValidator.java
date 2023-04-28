@@ -11,8 +11,9 @@ import java.util.function.Predicate;
 public class RouterValidator {
 
     public static final List<String> openApiEndpoints = List.of(
-            "/auth/register",
-            "/auth/login"
+            "/service/auth/register",
+            "/service/auth/login",
+            "/service/auth/test"
     );
 
     public Predicate<ServerHttpRequest> isSecured =
@@ -21,7 +22,8 @@ public class RouterValidator {
                     .noneMatch(uri -> request.getURI().getPath().contains(uri));
 
     public static final List<String> endpointsWithoutActivation = List.of(
-            "/auth/activate"
+            "/service/auth/activate",
+            "/service/auth/test"
     );
 
     public Predicate<ServerHttpRequest> isRequiresActivation =

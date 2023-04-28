@@ -1,6 +1,8 @@
 package com.example.ApiGateway.Config;
 
 import io.jsonwebtoken.Claims;
+import lombok.extern.log4j.Log4j2;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -15,15 +17,18 @@ import reactor.core.publisher.Mono;
 @RefreshScope
 @Component
 public class AuthenticationFilter implements GatewayFilter {
-
     @Autowired
     private RouterValidator routerValidator;
     @Autowired
     private JwtUtil jwtUtil;
-
+    private static Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+
+        log.info(request.getPath().toString());
+        log.trace(request.getHeaders().toString());
+
         if (routerValidator.isSecured.test(request)) {
             if (this.isAuthMissing(request)) {
                 return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
@@ -42,6 +47,7 @@ public class AuthenticationFilter implements GatewayFilter {
             }
 
         }
+//        log.info(exchange.getResponse().getStatusCode().toString());
         return chain.filter(exchange);
     }
 
@@ -76,6 +82,5 @@ public class AuthenticationFilter implements GatewayFilter {
                 .header("role",String.valueOf(claims.get("role")))
                 .header("status",String.valueOf(claims.get("status")))
                 .build();
-        System.out.println(exchange.getRequest().getPath());
     }
 }
