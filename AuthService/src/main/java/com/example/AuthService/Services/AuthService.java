@@ -1,6 +1,7 @@
 package com.example.AuthService.Services;
 
 
+import com.example.AuthService.Dto.ActivationDto;
 import com.example.AuthService.Entities.*;
 import com.example.AuthService.Exception.AuthExcept;
 import com.example.AuthService.Request.ActivationRequest;
@@ -8,6 +9,8 @@ import com.example.AuthService.Request.LoginRequest;
 import com.example.AuthService.Request.RegistrationRequest;
 import com.example.AuthService.Response.AuthResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+    private static Logger log = LoggerFactory.getLogger(AuthService.class);
     private final JwtUtil jwt;
     private final UserService userService;
     private final AmqpTemplate amqpTemplate;
@@ -38,6 +42,7 @@ public class AuthService {
         user.setPassword(BCrypt.hashpw(registrationRequest.getPassword(), BCrypt.gensalt()));
 
         userService.register(user);
+        log.info("username successfully register " + user.toString());
 
         String accessToken = jwt.generate(user, "ACCESS");
         String refreshToken = jwt.generate(user, "REFRESH");

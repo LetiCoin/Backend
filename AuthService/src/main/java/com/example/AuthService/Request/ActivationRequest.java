@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivationRequest {
-
     private String firstname;
     private String lastname;
-
-
 }

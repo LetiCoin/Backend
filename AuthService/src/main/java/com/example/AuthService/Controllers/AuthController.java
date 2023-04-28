@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
-@RequestMapping(value = "/auth")
+@RequestMapping(value = "/service/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -34,6 +36,7 @@ public class AuthController {
             description = "Login Endpoint"
     )
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) throws AuthExcept {
+        System.out.println(loginRequest);
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
@@ -54,13 +57,17 @@ public class AuthController {
         return ResponseEntity.ok(authService.activate(activationRequest,login));
     }
 
+//    @PostMapping(value = "/validate")
+//    public ResponseEntity<>
+
     @GetMapping(value = "test")
-    public ResponseEntity<Response> test(@RequestBody Response response) throws Exception {
-        if(response.getMessage().equals("exception")){
-            throw new Exception("this is except");
-        }
-        response.setMessage("ok");
-        return ResponseEntity.ok(response);
+    public Date test() throws Exception {
+        return new Date();
+    }
+
+    @GetMapping(value = "/testtoken")
+    public String testtoken(){
+        return "Successful";
     }
 
 }

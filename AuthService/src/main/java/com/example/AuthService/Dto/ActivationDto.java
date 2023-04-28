@@ -1,5 +1,6 @@
-package com.example.AuthService.Entities;
+package com.example.AuthService.Dto;
 
+import com.example.AuthService.Entities.User;
 import com.example.AuthService.Request.ActivationRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
