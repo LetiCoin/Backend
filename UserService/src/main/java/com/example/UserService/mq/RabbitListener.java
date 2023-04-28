@@ -1,5 +1,6 @@
 package com.example.UserService.mq;
 
+import com.example.UserService.Dto.ActivationDto;
 import com.example.UserService.Models.User;
 //import com.example.UserService.Models.UserRegDto;
 import com.example.UserService.Services.UserService;
@@ -17,15 +18,14 @@ public class RabbitListener {
     @Autowired
     private UserService userService;
 
-    @org.springframework.amqp.rabbit.annotation.RabbitListener(queues = "AuthUser") //from Auth to User service
+    @org.springframework.amqp.rabbit.annotation.RabbitListener(queues = "[LetiCoin]ActivationAcc") //Activation Request
     public void authentication(String msg) {
-//        try{
-//            UserRegDto newUser = mapper.readValue(msg, UserRegDto.class);
-//            User user = new User(newUser);
-//            userService.register(user);
-//        }catch (JsonProcessingException e){
-//            throw new RuntimeException(e);
-//        }
+        try{
+            ActivationDto newUser = mapper.readValue(msg, ActivationDto.class);
+            User user = userService.addUser(newUser);
+        }catch (JsonProcessingException e){
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.UserService.Services;
 
+import com.example.UserService.Dto.ActivationDto;
 import com.example.UserService.Models.User;
 import com.example.UserService.Repos.UserRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +32,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findById(Long id) {
         return userRepo.findById(id).orElse(null);
+    }
+
+    @Override
+    public User addUser(ActivationDto activationDto) {
+        try{
+            return this.userRepo.save(new User(activationDto));
+        }catch (Exception ex){
+            throw ex;
+        }
     }
 
 //    @Override

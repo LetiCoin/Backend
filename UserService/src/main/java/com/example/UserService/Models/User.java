@@ -1,5 +1,6 @@
 package com.example.UserService.Models;
 
+import com.example.UserService.Dto.ActivationDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +26,10 @@ public class User {
     @Column(name = "email")
     private String email;
 
-
+    public User(ActivationDto activationDto){
+        this.login = activationDto.getLogin();
+        this.firstName = activationDto.getFirstname();
+        this.lastName = activationDto.getLastname();
+        this.email = activationDto.getEmail();
+    }
 }
