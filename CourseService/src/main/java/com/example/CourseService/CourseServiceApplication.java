@@ -6,6 +6,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+
+// Add exeptions
+// Add log
 @SpringBootApplication
 @EnableDiscoveryClient
 public class CourseServiceApplication {

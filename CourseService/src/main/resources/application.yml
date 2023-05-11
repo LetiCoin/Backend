@@ -5,9 +5,9 @@ spring:
   application:
     name: course-service
   datasource:
-    url: jdbc:postgresql://localhost/CourseDB
+    url: jdbc:postgresql://127.0.0.1/[LetiCoin]CourseServiceDB
     username: postgres
-    password: 2392
+    password: 23922392
   jpa:
     generate-ddl: true
 

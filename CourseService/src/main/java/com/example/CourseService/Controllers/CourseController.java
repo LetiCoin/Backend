@@ -1,7 +1,8 @@
 package com.example.CourseService.Controllers;
 
+import com.example.CourseService.Dto.CourseDto;
 import com.example.CourseService.Models.Course;
-import com.example.CourseService.Models.UserCourseDto;
+import com.example.CourseService.Models.UserCourse;
 import com.example.CourseService.Services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/course/preview/")
+@RequestMapping(value = "/service/course/preview")
 public class CourseController {
 
     @Autowired
@@ -20,14 +21,14 @@ public class CourseController {
         return courseService.findAll();
     }
 
-    @GetMapping("/list")
-    public List<UserCourseDto> list(@RequestHeader(value = "id") Long userId){
-        return courseService.refactor(courseService.findAllByUserId(userId));
+    @PostMapping("/create")
+    public CourseDto create(@RequestHeader("login") String login,
+                            @RequestHeader("role") String role,
+                            @RequestBody CourseDto courseDto){
+        return courseService.create(courseDto,login,role);
     }
-
-    @GetMapping("/{courseId}")
-    public Course coursePage(@PathVariable("courseId") Long courseId){
-        return courseService.findById(courseId);
+    @GetMapping("{courseId}")
+    public Course getById(@PathVariable("courseId") Long id){
+        return courseService.findById(id);
     }
-
 }
