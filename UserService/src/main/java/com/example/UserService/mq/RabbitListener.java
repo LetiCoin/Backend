@@ -2,7 +2,6 @@ package com.example.UserService.mq;
 
 import com.example.UserService.Dto.ActivationDto;
 import com.example.UserService.Models.User;
-//import com.example.UserService.Models.UserRegDto;
 import com.example.UserService.Services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

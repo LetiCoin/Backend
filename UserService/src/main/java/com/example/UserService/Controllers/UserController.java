@@ -15,14 +15,14 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/service/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @GetMapping("/home")
-    public User homepage(@RequestHeader(value = "username") String username){
+    public User homepage(@RequestHeader(value = "login") String username){
         return userService.findByUsername(username);
     }
 //

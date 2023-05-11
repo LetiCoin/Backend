@@ -17,7 +17,7 @@ public class GatewayConfig {
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("user-service", r -> r.path("/user/**")
+                .route("user-service", r -> r.path("/service/user/**")
                         .filters(f -> f.filter(filter))
                         .uri("lb://user-service/"))
 
@@ -29,7 +29,7 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter))
                         .uri("lb://task-service/"))
 
-                .route("course-service", r -> r.path("/course/preview/**")
+                .route("course-service", r -> r.path("/service/course/preview/**")
                         .filters(f -> f.filter(filter))
                         .uri("lb://course-service/"))
 
