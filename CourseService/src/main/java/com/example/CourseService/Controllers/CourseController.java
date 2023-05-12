@@ -1,6 +1,7 @@
 package com.example.CourseService.Controllers;
 
 import com.example.CourseService.Dto.CourseDto;
+import com.example.CourseService.Dto.UserCourseDto;
 import com.example.CourseService.Models.Course;
 import com.example.CourseService.Models.UserCourse;
 import com.example.CourseService.Services.CourseService;
@@ -28,7 +29,14 @@ public class CourseController {
         return courseService.create(courseDto,login,role);
     }
     @GetMapping("{courseId}")
-    public Course getById(@PathVariable("courseId") Long id){
-        return courseService.findById(id);
+    public UserCourseDto getById(@PathVariable("courseId") Long id,
+                                 @RequestHeader("login") String login){
+        return courseService.findById(id,login);
+    }
+
+    @PostMapping("/subscribe/{courseId}")
+    public UserCourseDto subscribe(@PathVariable("courseId") Long id,
+                                   @RequestHeader("login") String login){
+        return courseService.subscribe(id,login);
     }
 }

@@ -1,9 +1,12 @@
 package com.example.CourseService.Services;
 
 import com.example.CourseService.Dto.CourseDto;
+import com.example.CourseService.Dto.UserCourseDto;
 import com.example.CourseService.Models.Course;
+import com.example.CourseService.Models.Role;
 import com.example.CourseService.Models.UserCourse;
 import com.example.CourseService.Repos.CourseRepo;
+import com.example.CourseService.Repos.RoleRepo;
 import com.example.CourseService.Repos.UserCourseRepo;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +18,11 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService{
     private final CourseRepo courseRepo;
     private final UserCourseRepo userCourseRepo;
-    CourseServiceImpl(CourseRepo courseRepo, UserCourseRepo userCourseRepo){
+    private final RoleRepo roleRepo;
+    CourseServiceImpl(CourseRepo courseRepo, UserCourseRepo userCourseRepo, RoleRepo roleRepo){
         this.courseRepo = courseRepo;
         this.userCourseRepo = userCourseRepo;
+        this.roleRepo = roleRepo;
     }
     @Override
     public List<Course> findAll() {
@@ -25,8 +30,46 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public Course findById(Long id) {
-        return courseRepo.findById(id).orElse(null);
+    public UserCourseDto findById(Long courseId, String login) {
+
+        Course course = courseRepo.findById(courseId).orElse(null);
+        if(course == null) {
+            // exeption(Course not found)
+            return null;
+        }
+        UserCourse userCourse = userCourseRepo.findByCourseIdAndUserLogin(course.getId(), login).orElse(null);
+        UserCourseDto userCourseDto = new UserCourseDto(course, userCourse.getValue());
+        Role role = roleRepo.findById(userCourse.getRoleId()).orElse(null);
+        if(role == null){
+            // exeption(Role not found)
+            return null;
+        }
+        userCourseDto.setRole(role.getName());
+        return userCourseDto;
+    }
+
+    @Override
+    public UserCourseDto subscribe(Long courseId, String login) {
+        Course course = courseRepo.findById(courseId).orElse(null);
+        if(course == null) {
+            // exeption(Course not found)
+            return null;
+        }
+        UserCourse userCourse = userCourseRepo.findByCourseIdAndUserLogin(course.getId(), login).orElse(null);
+        if(userCourse!=null){
+            // exeption(User already on course)
+            return null;
+        }
+        userCourse = new UserCourse(course.getId(),login,1L);
+        userCourse = userCourseRepo.save(userCourse);
+        UserCourseDto userCourseDto = new UserCourseDto(course, userCourse.getValue());
+        Role role = roleRepo.findById(userCourse.getRoleId()).orElse(null);
+        if(role == null){
+            // exeption(Role not found)
+            return null;
+        }
+        userCourseDto.setRole(role.getName());
+        return userCourseDto;
     }
 
     @Override
