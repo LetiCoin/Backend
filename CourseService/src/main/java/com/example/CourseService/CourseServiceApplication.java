@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 // Add exeptions
-// Add log
+
 @SpringBootApplication
 @EnableDiscoveryClient
 public class CourseServiceApplication {
