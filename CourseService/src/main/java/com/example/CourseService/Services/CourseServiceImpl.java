@@ -2,6 +2,7 @@ package com.example.CourseService.Services;
 
 import com.example.CourseService.Dto.CourseDto;
 import com.example.CourseService.Dto.UserCourseDto;
+import com.example.CourseService.Exceptions.CourseExcept;
 import com.example.CourseService.Models.Course;
 import com.example.CourseService.Models.Role;
 import com.example.CourseService.Models.UserCourse;
@@ -30,12 +31,11 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public UserCourseDto findById(Long courseId, String login) {
+    public UserCourseDto findById(Long courseId, String login) throws CourseExcept {
 
         Course course = courseRepo.findById(courseId).orElse(null);
         if(course == null) {
-            // exeption(Course not found)
-            return null;
+            throw new CourseExcept("Course not found");
         }
         UserCourse userCourse = userCourseRepo.findByCourseIdAndUserLogin(course.getId(), login).orElse(null);
         UserCourseDto userCourseDto = new UserCourseDto(course, userCourse.getValue());
